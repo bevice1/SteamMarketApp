@@ -135,7 +135,7 @@
             </objects>
             <point key="canvasLocation" x="971.01449275362324" y="66.964285714285708"/>
         </scene>
-        <!--Dashboard 2-->
+        <!--Dashboard 0-->
         <scene sceneID="Ohp-vY-T20">
             <objects>
                 <viewController id="SlS-a3-t7o" customClass="CollectionViewController" customModule="SteamApp" customModuleProvider="target" sceneMemberID="viewController">
@@ -191,7 +191,7 @@
                             <constraint firstItem="zKp-FB-VUr" firstAttribute="leading" secondItem="n7r-Yz-LFN" secondAttribute="leading" id="zKY-mC-CDX"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Dashboard 2" image="suit.heart.fill" catalog="system" id="QgH-Oo-nFq"/>
+                    <tabBarItem key="tabBarItem" title="Dashboard 0" image="suit.heart.fill" catalog="system" id="QgH-Oo-nFq"/>
                     <connections>
                         <outlet property="collectionView" destination="zKp-FB-VUr" id="YAY-d1-X8r"/>
                     </connections>
