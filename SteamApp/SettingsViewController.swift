@@ -13,9 +13,10 @@ class SettingsViewController: UIViewController{
     @IBOutlet weak var segment: UISegmentedControl!
     override func viewDidLoad() {
         super.viewDidLoad() //hallo Welt
+
         
         //test
-     
+//     zeas
     }
 
 }
