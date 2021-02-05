@@ -14,7 +14,7 @@ class SettingsViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //test 343434
+        //test
      
     }
 
