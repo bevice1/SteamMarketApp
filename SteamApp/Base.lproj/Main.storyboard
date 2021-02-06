@@ -70,7 +70,7 @@
                             </textField>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="GWb-MQ-RgK">
                                 <rect key="frame" x="10" y="70" width="394" height="150"/>
-                                <color key="backgroundColor" red="0.93333333333333335" green="0.93333333333333335" blue="0.93333333333333335" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.19235527520000001" green="0.2469049096" blue="0.37452554700000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="150" id="D62-vU-KmB"/>
                                 </constraints>
@@ -80,7 +80,8 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="UCO-e4-QxR"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FcK-N5-4SZ">
@@ -104,7 +105,7 @@
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="BCh-CL-9dG"/>
-                        <color key="backgroundColor" red="0.14752981070000001" green="0.21809497480000001" blue="0.32559525969999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.19215686274509802" green="0.24705882352941178" blue="0.37647058823529411" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="GWb-MQ-RgK" firstAttribute="top" secondItem="vrn-C9-E24" secondAttribute="bottom" id="38a-5u-0dh"/>
                             <constraint firstItem="vrn-C9-E24" firstAttribute="top" secondItem="dRt-3C-RCv" secondAttribute="top" constant="20" id="5CR-Sv-ZMI"/>
