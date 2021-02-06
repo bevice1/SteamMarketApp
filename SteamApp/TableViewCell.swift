@@ -71,7 +71,7 @@ class TableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 20, left: 5, bottom: 20, right: 5))
-        imageView?.frame = CGRect( x: 20, y: 50, width: 350, height: 200)
+        imageView?.frame = CGRect( x: 20, y: 50, width: 320, height: 200)
     }
     
 }
