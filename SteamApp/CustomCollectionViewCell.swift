@@ -44,14 +44,17 @@ class CustomCollectionViewCell: UICollectionViewCell {
             var currency = ""
             let request = NSFetchRequest<Currency>(entityName: "Currency")
             if let context = appDelegate?.persistentContainer.viewContext{
-                let readEntry = try? context.fetch(request)
-                for elem in readEntry!{
+                if let readEntry = try? context.fetch(request){
+                for elem in readEntry{
                     currency = elem.currencyString!
                 }
+                }
+                
             }
 //        imageView.image =
         nameLabel.text = data.elem.market_hash_name
         valueLabel.text = String(data.purchasePrize) + currency
+        print(data.purchasePrize)
 //            var medianPrice = iteminfo.median_price.replacingOccurrences(of: ",", with: ".").dropLast()
         if data.purchasePrize > data.elem.prices.latest{
             increaseLabel.textColor = UIColor.red

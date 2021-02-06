@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class TableViewCell: UITableViewCell {
 
@@ -30,6 +31,20 @@ class TableViewCell: UITableViewCell {
     
     
     public func configure(data: MarketItem){
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+
+        var currency = ""
+        let request = NSFetchRequest<Currency>(entityName: "Currency")
+        if let context = appDelegate?.persistentContainer.viewContext{
+            if let readEntry = try? context.fetch(request){
+            for elem in readEntry{
+                currency = elem.currencyString!
+            }
+            }
+            
+        }
+        
+        
         var imageURL = URL(string:data.elem.image)
         DispatchQueue.global().async {
             let imageData = try? Data(contentsOf: imageURL!)
@@ -43,14 +58,14 @@ class TableViewCell: UITableViewCell {
         }
 //        imageView.image =
         nameLabel.text = data.elem.market_hash_name
-        valueLabel.text = String(data.purchasePrize) + "€"
+        valueLabel.text = String(data.purchasePrize) + currency
 //            var medianPrice = iteminfo.median_price.replacingOccurrences(of: ",", with: ".").dropLast()
         if data.purchasePrize > data.elem.prices.latest{
             increaseLabel.textColor = UIColor.red
         }else{
             increaseLabel.textColor = UIColor.green
         }
-        increaseLabel.text = String(data.elem.prices.latest) + "€"
+        increaseLabel.text = String(data.elem.prices.latest) + currency
     }
 
     override func layoutSubviews() {

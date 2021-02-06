@@ -33,7 +33,6 @@ class AddButtonViewController: UIViewController{
         if text!.count > 2 {
             suggestions = searchMarketName(substring: text!)
             suggestionTable.reloadData()
-            print(suggestions)
         }
     }
     

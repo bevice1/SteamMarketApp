@@ -70,6 +70,7 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
     var refreshControl = UIRefreshControl()
     var dashboardIcons: [MarketItem] = []
     var responseArray: [MarketItemsResponse] = []
+    var currency: String = "€"
     
     
     var namesDidLoad = false
@@ -87,10 +88,10 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
         refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
         tableView.addSubview(refreshControl)
         
-        if !namesDidLoad {
-            print("loadingnames")
-            loadNames()
-        }
+//        if !namesDidLoad {
+//            print("loadingnames")
+//            loadNames()
+//        }
         
         tableView.register(UINib(nibName:"TableViewCell", bundle:nil), forCellReuseIdentifier: "TableViewCell")
         
@@ -101,21 +102,26 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
         
         let request = NSFetchRequest<Currency>(entityName: "Currency")
         if let context = appDelegate?.persistentContainer.viewContext{
-            let readEntry = try? context.fetch(request)
-            if readEntry == []{
-                
-                if let viewContext = appDelegate?.persistentContainer.viewContext{
-                    let currency = Currency(context: viewContext)
-                    currency.currencyString = "$"
+            if let readEntry = try? context.fetch(request){
+                for elem in readEntry{
+                    currency = elem.currencyString!
+                }
+            }else{
+                    let currency = Currency(context: context)
+                    currency.currencyString = "€"
                     appDelegate?.saveContext()
                 }
                 
                 
             }
             
-        }
         
         
+        
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        responseArray = []
+        loadNames()
     }
     func loadNames() {
         var JSON = ""
