@@ -67,7 +67,7 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
     
     
     
-    
+    var refreshControl = UIRefreshControl()
     var dashboardIcons: [MarketItem] = []
     var responseArray: [MarketItemsResponse] = []
     
@@ -76,7 +76,16 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //        updateDashboadentry()
+        //refresh specific properties
+        let attributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        let attributedTitle = NSAttributedString(string: "Refresh", attributes: attributes)
+        
+        refreshControl.tintColor = UIColor.white
+    
+        
+        refreshControl.attributedTitle = attributedTitle
+        refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
+        tableView.addSubview(refreshControl)
         
         if !namesDidLoad {
             print("loadingnames")
@@ -203,6 +212,13 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
         guard let addButtonSegue = segue.destination as? AddButtonViewController else {return}
 
         addButtonSegue.responseCollection = responseArray
+    }
+    
+    @objc func refresh(_ sender: AnyObject) {
+        //refresh data of Tableview
+        responseArray = []
+        loadNames()
+        refreshControl.endRefreshing()
     }
     
 }

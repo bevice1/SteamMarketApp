@@ -15,6 +15,7 @@ class TableViewCell: UITableViewCell {
     @IBOutlet weak var increaseLabel:UILabel!
     @IBOutlet weak var valueLabel:UILabel!
     
+    @IBOutlet weak var progress: UIActivityIndicatorView!
     @IBOutlet weak var label: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -31,15 +32,17 @@ class TableViewCell: UITableViewCell {
     public func configure(data: MarketItem){
         var imageURL = URL(string:data.elem.image)
         DispatchQueue.global().async {
-            let data = try? Data(contentsOf: imageURL!)
-            let img  = UIImage(data: data!)
+            let imageData = try? Data(contentsOf: imageURL!)
+            let img  = UIImage(data: imageData!)
             DispatchQueue.main.async {
                 self.imageView!.image = img
+                self.contentView.layer.borderWidth = 2
+                self.contentView.layer.borderColor = UIColor(hex: data.elem.border_color)?.cgColor
+                self.progress.stopAnimating()
             }
         }
 //        imageView.image =
         nameLabel.text = data.elem.market_hash_name
-        nameLabel.textColor = UIColor(hex: data.elem.border_color)
         valueLabel.text = String(data.purchasePrize) + "€"
 //            var medianPrice = iteminfo.median_price.replacingOccurrences(of: ",", with: ".").dropLast()
         if data.purchasePrize > data.elem.prices.latest{

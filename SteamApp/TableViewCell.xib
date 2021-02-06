@@ -49,6 +49,10 @@
                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="GW7-fb-EyG">
+                        <rect key="frame" x="182" y="126" width="37" height="37"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    </activityIndicatorView>
                 </subviews>
                 <color key="backgroundColor" red="0.062745098039215685" green="0.094117647058823528" blue="0.13725490196078433" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 <constraints>
@@ -90,6 +94,7 @@
                 <outlet property="increaseLabel" destination="JCt-b8-hl4" id="ybu-Hj-rdx"/>
                 <outlet property="label" destination="U7l-lK-8Kv" id="KSF-SZ-F9z"/>
                 <outlet property="nameLabel" destination="U7l-lK-8Kv" id="kQf-bJ-e3N"/>
+                <outlet property="progress" destination="GW7-fb-EyG" id="5NJ-yV-wTD"/>
                 <outlet property="valueLabel" destination="3Xw-Dj-Eyj" id="6CK-nl-gHt"/>
             </connections>
             <point key="canvasLocation" x="182.60869565217394" y="160.71428571428569"/>
