@@ -230,6 +230,17 @@ extension CollectionViewController:UITableViewDataSource{
         case .delete:
             dashboardIcons.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
+            
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+
+            let request = NSFetchRequest<Dashboard>(entityName: "Dashboard")
+            if let context = appDelegate?.persistentContainer.viewContext{
+                let readEntry = try? context.fetch(request)
+                context.delete((readEntry?[indexPath.row])!)
+                appDelegate?.saveContext()
+
+            }
+            
         default:
             break
         }
