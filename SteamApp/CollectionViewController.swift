@@ -57,60 +57,36 @@ extension Array where Element == MarketItem{
 }
 class CollectionViewController: UIViewController, UIPopoverPresentationControllerDelegate{
     
+    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var collectionView: UICollectionView!
+    
     @IBAction func unwindToBucketListController(segue: UIStoryboardSegue){
-//        updateDashboadentry()
-        collectionView.reloadData()
+        loadDashboardIcons()
+        tableView.reloadData()
     }
     
-    @IBOutlet weak var collectionView: UICollectionView!
+    
+    
+    
     var dashboardIcons: [MarketItem] = []
     var responseArray: [MarketItemsResponse] = []
     
-    
-    
-    let skins = ["Chroma Case" : "Chroma%20Case",
-                 "Chroma 2 Case" : "Chroma%202%20Case",
-                 "Spectrum Case" : "Spectrum%20Case",
-                 "Spectrum 2 Case" : "Spectrum%202%20Case",
-                 "Prisma Case" : "Prisma%20Case"]
-    
-    var itemResponses:[ItemResponse?] = []
     
     var namesDidLoad = false
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        dashboardIcons.append(MarketItem(elem:MarketItemsResponse(image: "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEmyVQ7MEpiLuSrYmnjQO3-UdsZGHyd4_Bd1RvNQ7T_FDrw-_ng5Pu75iY1zI97bhLsvQz",
-            border_color: "#D2D2D2",
-            market_hash_name:"AK-47 | Redline (Field-Tested)", prices: Price(latest: 1)),purchasePrize: 3))
-        dashboardIcons.append(MarketItem(elem:MarketItemsResponse(image: "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEmyVQ7MEpiLuSrYmnjQO3-UdsZGHyd4_Bd1RvNQ7T_FDrw-_ng5Pu75iY1zI97bhLsvQz",
-            border_color: "#D2D2D2",
-            market_hash_name:"AK-47 | Redline (Field-Tested)", prices: Price(latest: 1)),purchasePrize: 0))
-        dashboardIcons.append(MarketItem(elem:MarketItemsResponse(image: "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEmyVQ7MEpiLuSrYmnjQO3-UdsZGHyd4_Bd1RvNQ7T_FDrw-_ng5Pu75iY1zI97bhLsvQz",
-            border_color: "#D2D2D2",
-            market_hash_name:"AK-47 | Redline (Field-Tested)", prices: Price(latest: 1)),purchasePrize: 3))
-        dashboardIcons.append(MarketItem(elem:MarketItemsResponse(image: "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEmyVQ7MEpiLuSrYmnjQO3-UdsZGHyd4_Bd1RvNQ7T_FDrw-_ng5Pu75iY1zI97bhLsvQz",
-            border_color: "#D2D2D2",
-            market_hash_name:"AK-47 | Redline (Field-Tested)", prices: Price(latest: 1)),purchasePrize: 3))
-        
-//        updateDashboadentry()
+        //        updateDashboadentry()
         
         if !namesDidLoad {
             print("loadingnames")
             loadNames()
         }
         
+        tableView.register(UINib(nibName:"TableViewCell", bundle:nil), forCellReuseIdentifier: "TableViewCell")
         
-        
-        
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 200, height: 200)
-        collectionView.collectionViewLayout = layout
-        
-        
-        collectionView.register(CustomCollectionViewCell.nib(), forCellWithReuseIdentifier: CustomCollectionViewCell.identifier)
-        collectionView.delegate = self
-        collectionView.dataSource = self
+        tableView.delegate = self
+        tableView.dataSource = self
         
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         
@@ -132,15 +108,7 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
         
         
     }
-    func test(){
-        let test = searchMarketName(substring: "asi")
-        for elem in test{
-            print(elem.market_hash_name)
-        }
-    }
-    
     func loadNames() {
-        //        print("erster aufruf")
         var JSON = ""
         namesDidLoad = true
         let pokeUrl = URL(string: "https://api.steamapis.com/market/items/730?api_key=L9TzxRTty4RlnexsaLfeUH5OhpM")!
@@ -158,12 +126,9 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
                         self.responseArray.append(elem)
                     }
                     print("doneloadingnames")
-//                    self.test()
-                    //                    print(self.responseArray)
-                    //                    self.pokeList.append(contentsOf: decodedResponse.results)
                     DispatchQueue.main.async {
                         //                        self.tableView.reloadData()
-                        
+                        self.loadDashboardIcons()
                     }
                     
                     
@@ -180,58 +145,30 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
         
         
     }
-    
+    func loadDashboardIcons() {
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        dashboardIcons = []
+        let request = NSFetchRequest<Dashboard>(entityName: "Dashboard")
+        if let context = appDelegate?.persistentContainer.viewContext{
+            if let readEntry = try? context.fetch(request){
+                for elem in readEntry{
+                    print(elem.name)
+                    if let marketHashName = elem.name{
+                        var hashName = searchMarketName(substring: marketHashName)
+                        for marketElement in hashName{
+                            if marketElement.market_hash_name == elem.name {
+                                self.dashboardIcons.append(MarketItem(elem: marketElement, purchasePrize: elem.purchasePrize))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        tableView.reloadData()
+    }
     
     
     let BASE_URL:String = "https://api.steamapis.com/market/item/730/"
-    
-//    func updateDashboadentry() {
-//        print("erster aufruf")
-//        var JSON = ""
-//        for var elem in dashboardIcons{
-//            print("t.er aufruf")
-//            if let iteminfo =  elem.iteminfos{
-//
-//            }else{
-//                print("anfang:"+elem.name+"ende")
-//                let weatherURL = URL(string: BASE_URL + elem.name + "?api_key=L9TzxRTty4RlnexsaLfeUH5OhpM")!
-//                let request = URLRequest(url: weatherURL)
-//                let config = URLSessionConfiguration.default
-//                let urlSession = URLSession(configuration: config)
-//                print(weatherURL)
-//                urlSession.dataTask(with: request){ (data, response, error) in
-//                    do{
-//                        if let data = data, let result = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String : Any]{
-//                            print(result)
-//                            //                            JSON = "\(result)"
-//                            //                            let jsonData = JSON.data(using: .utf8)
-//                            //convert JSON to objects
-//                            let decodedResponse = try JSONDecoder().decode(ItemResponse.self, from: data)
-//                            elem.iteminfos = decodedResponse
-//                            var elementIndex = self.dashboardIcons.searchForMarketItem(name: elem.name)
-//                            if elementIndex != -1 {
-//                                self.dashboardIcons[elementIndex].iteminfos = decodedResponse
-//                                DispatchQueue.main.async {
-//                                    self.collectionView.reloadData()
-//                                }
-//                            }
-//
-//
-//
-//
-//                        }else{
-//                            print("error")
-//                        }
-//                    }catch let error{
-//                        print(error)
-//                    }
-//
-//                }.resume()
-//            }
-//        }
-//
-//    }
-    
     
     
     func searchMarketName(substring: String) -> [MarketItemsResponse] {
@@ -254,7 +191,7 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
     
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-       
+        
         if segue.identifier == "addButtonSegue"{
             let popoverVc = segue.destination
             
@@ -264,41 +201,52 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
         }
         
         guard let addButtonSegue = segue.destination as? AddButtonViewController else {return}
-        addButtonSegue.nameCollection = Array(skins.keys)
+
         addButtonSegue.responseCollection = responseArray
     }
     
 }
-extension CollectionViewController: UICollectionViewDelegate{
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.deselectItem(at: indexPath, animated: true)
-        print("actionlistener")
+
+
+
+extension CollectionViewController:UITableViewDelegate{
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 350.0
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    }
 }
 
-extension CollectionViewController: UICollectionViewDataSource{
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+extension CollectionViewController:UITableViewDataSource{
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        
+        switch(editingStyle){
+        case .delete:
+            dashboardIcons.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        default:
+            break
+        }
+    }
+    
+    
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dashboardIcons.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CustomCollectionViewCell.identifier, for: indexPath) as! CustomCollectionViewCell
-        
-        let keyArray = Array(skins.keys)
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
         cell.configure(data: dashboardIcons[indexPath.row])
         return cell
     }
-}
-
-extension CollectionViewController: UICollectionViewDelegateFlowLayout{
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        UIEdgeInsets(top: 10, left: 7, bottom: 0, right: 7)
-    }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 400, height: 300)
-    }
 }

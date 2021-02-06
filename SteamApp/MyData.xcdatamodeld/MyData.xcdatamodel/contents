@@ -3,7 +3,12 @@
     <entity name="Currency" representedClassName="Currency" syncable="YES" codeGenerationType="class">
         <attribute name="currencyString" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="Dashboard" representedClassName="Dashboard" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="purchasePrize" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+    </entity>
     <elements>
         <element name="Currency" positionX="-27" positionY="18" width="128" height="58"/>
+        <element name="Dashboard" positionX="-27" positionY="27" width="128" height="73"/>
     </elements>
 </model>
