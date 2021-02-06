@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class AddButtonViewController: UIViewController{
     
@@ -20,13 +21,8 @@ class AddButtonViewController: UIViewController{
     var index = 0
     override func viewDidLoad() {
         super.viewDidLoad()
-        chosenItemName = nameCollection[0]
         
         itemField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
-//        suggestions.append(MarketItemsResponse(image: "test.png",border_color: "#789078",market_hash_name: "Knife"))
-       /* suggestions.append(MarketItemsResponse(image: "test.png",border_color: "#789078",market_hash_name: "Knife"))
-        suggestions.append(MarketItemsResponse(image: "test.png",border_color: "#789078",market_hash_name: "Knife"))
-        suggestions.append(MarketItemsResponse(image: "test.png",border_color: "#789078",market_hash_name: "Knife"))*/
         
         suggestionTable.register(UINib(nibName:"SuggestionCell", bundle:nil), forCellReuseIdentifier: "SuggestionCell")
         suggestionTable.delegate = self
@@ -35,7 +31,6 @@ class AddButtonViewController: UIViewController{
     @objc func textFieldDidChange(_ textField: UITextField) {
         let text = textField.text
         if text!.count > 2 {
-            print(text)
             suggestions = searchMarketName(substring: text!)
             suggestionTable.reloadData()
             print(suggestions)
@@ -45,8 +40,14 @@ class AddButtonViewController: UIViewController{
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let unwindToCollectionView = segue.destination as? CollectionViewController else {return}
         unwindToCollectionView.dashboardIcons.append(MarketItem(elem: suggestions[index], purchasePrize: Double(prizeField.text!) ?? 0.0))
-//        unwindToCollectionView.dashboardIcons.append(MarketItem(name: itemField.text!, iteminfos: nil, purchasePrize: Double(prizeField.text!) ?? 0.0))
-//        unwindToCollectionView.dashboardIcons.append(MarketItem(name: <#T##String#>, iteminfos: <#T##ItemResponse?#>, purchasePrize: <#T##Double#>))
+        
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        if let context = appDelegate?.persistentContainer.viewContext{
+            var dashboard = Dashboard(context: context)
+            dashboard.name = suggestions[self.index].market_hash_name
+            dashboard.purchasePrize = Double(prizeField.text!) ?? 0.0
+            appDelegate?.saveContext()
+        }
     }
     
     
@@ -57,7 +58,6 @@ class AddButtonViewController: UIViewController{
         for elem in responseCollection {
             if elem.market_hash_name.uppercased().contains(substring.uppercased()) {
                 resultingArray.append(elem)
-                elem.market_hash_name
             }
         }
         return resultingArray
@@ -68,7 +68,6 @@ extension AddButtonViewController:UITableViewDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         itemField.text = suggestions[indexPath.row].market_hash_name
         index = indexPath.row
-//        print(responseCollection[indexPath.row].market_hash_name)
     }
 }
 
