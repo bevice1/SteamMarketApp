@@ -148,6 +148,10 @@
                                 <rect key="frame" x="0.0" y="44" width="414" height="852"/>
                                 <color key="backgroundColor" red="0.10588235294117647" green="0.15686274509803921" blue="0.22352941176470587" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </tableView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="ukK-w0-3mU">
+                                <rect key="frame" x="188" y="429" width="37" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
                             <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pL3-rU-Jog">
                                 <rect key="frame" x="314" y="713.5" width="70" height="69"/>
                                 <constraints>
@@ -177,6 +181,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Dashboard" image="suit.heart.fill" catalog="system" id="QgH-Oo-nFq"/>
                     <connections>
+                        <outlet property="progressStart" destination="ukK-w0-3mU" id="GzI-1M-P5u"/>
                         <outlet property="tableView" destination="pfq-iX-ucs" id="EcE-n7-ZAg"/>
                     </connections>
                 </viewController>

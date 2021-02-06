@@ -24,7 +24,7 @@ class AddButtonViewController: UIViewController{
         super.viewDidLoad()
         
         itemField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
-        itemField.attributedPlaceholder = NSAttributedString(string: "enter a item",
+        itemField.attributedPlaceholder = NSAttributedString(string: "enter an item name",
                                                                 attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         
         prizeField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)

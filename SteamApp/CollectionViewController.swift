@@ -57,6 +57,7 @@ extension Array where Element == MarketItem{
 }
 class CollectionViewController: UIViewController, UIPopoverPresentationControllerDelegate{
     
+    @IBOutlet weak var progressStart: UIActivityIndicatorView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -76,13 +77,12 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
     var namesDidLoad = false
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        tableView.separatorStyle = UITableViewCell.SeparatorStyle.none
         //refresh specific properties
         let attributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         let attributedTitle = NSAttributedString(string: "Refresh", attributes: attributes)
         
         refreshControl.tintColor = UIColor.white
-    
         
         refreshControl.attributedTitle = attributedTitle
         refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
@@ -166,6 +166,9 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
         let request = NSFetchRequest<Dashboard>(entityName: "Dashboard")
         if let context = appDelegate?.persistentContainer.viewContext{
             if let readEntry = try? context.fetch(request){
+                if readEntry.count == 0{
+                    progressStart.stopAnimating()
+                }
                 for elem in readEntry{
                     print(elem.name)
                     if let marketHashName = elem.name{
@@ -278,6 +281,7 @@ extension CollectionViewController:UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
         cell.configure(data: dashboardIcons[indexPath.row])
+        progressStart.stopAnimating()
         return cell
     }
     
