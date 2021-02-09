@@ -37,9 +37,11 @@ class AddButtonViewController: UIViewController{
     }
     @objc func textFieldDidChange(_ textField: UITextField) {
         let text = textField.text
-        print(text!.count)
         if text!.count > 2 {
             suggestions = searchMarketName(substring: text!)
+            suggestionTable.reloadData()
+        }else{
+            suggestions = []
             suggestionTable.reloadData()
         }
     }
@@ -71,20 +73,18 @@ class AddButtonViewController: UIViewController{
         var resultingArray: [MarketItemsResponse] = []
         let searchString = substring.uppercased().split(separator: " ")
         
-        print(searchString.count)
+        
         for elem in responseCollection {
             var subStringsContained = 0
-
+            
             
             for splitElem in searchString{
                 if elem.market_hash_name.uppercased().contains(splitElem){
-                    
-
                     subStringsContained += 1
                 }
-              
+                
             }
-    
+            
             if subStringsContained > 0 && subStringsContained == searchString.count {
                 resultingArray.append(elem)
             }
