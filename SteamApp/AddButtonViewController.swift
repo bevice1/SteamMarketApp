@@ -25,11 +25,11 @@ class AddButtonViewController: UIViewController{
         
         itemField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
         itemField.attributedPlaceholder = NSAttributedString(string: "enter an item name",
-                                                                attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
+                                                             attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         
         prizeField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
         prizeField.attributedPlaceholder = NSAttributedString(string: "purchase price",
-                                                                attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
+                                                              attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         
         suggestionTable.register(UINib(nibName:"SuggestionCell", bundle:nil), forCellReuseIdentifier: "SuggestionCell")
         suggestionTable.delegate = self
@@ -37,6 +37,7 @@ class AddButtonViewController: UIViewController{
     }
     @objc func textFieldDidChange(_ textField: UITextField) {
         let text = textField.text
+        print(text!.count)
         if text!.count > 2 {
             suggestions = searchMarketName(substring: text!)
             suggestionTable.reloadData()
@@ -68,11 +69,26 @@ class AddButtonViewController: UIViewController{
     
     func searchMarketName(substring: String) -> [MarketItemsResponse] {
         var resultingArray: [MarketItemsResponse] = []
+        let searchString = substring.uppercased().split(separator: " ")
         
+        print(searchString.count)
         for elem in responseCollection {
-            if elem.market_hash_name.uppercased().contains(substring.uppercased()) {
+            var subStringsContained = 0
+
+            
+            for splitElem in searchString{
+                if elem.market_hash_name.uppercased().contains(splitElem){
+                    
+
+                    subStringsContained += 1
+                }
+              
+            }
+    
+            if subStringsContained > 0 && subStringsContained == searchString.count {
                 resultingArray.append(elem)
             }
+            
         }
         return resultingArray
     }
