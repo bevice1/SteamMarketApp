@@ -162,6 +162,7 @@
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" backgroundImage="plus.circle.fill" catalog="system"/>
                                 <connections>
+                                    <action selector="unwindToBucketListControllerWithSegue:" destination="SlS-a3-t7o" eventType="touchUpInside" id="P5l-Fj-YgZ"/>
                                     <segue destination="1cz-ow-3Cd" kind="popoverPresentation" identifier="addButtonSegue" popoverAnchorView="pL3-rU-Jog" id="FhW-wa-W4b">
                                         <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
                                     </segue>
@@ -181,6 +182,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Dashboard" image="suit.heart.fill" catalog="system" id="QgH-Oo-nFq"/>
                     <connections>
+                        <outlet property="addButton" destination="pL3-rU-Jog" id="RfC-Wd-h2w"/>
                         <outlet property="progressStart" destination="ukK-w0-3mU" id="GzI-1M-P5u"/>
                         <outlet property="tableView" destination="pfq-iX-ucs" id="EcE-n7-ZAg"/>
                     </connections>

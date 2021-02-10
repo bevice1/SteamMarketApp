@@ -61,6 +61,7 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var collectionView: UICollectionView!
     
+    @IBOutlet weak var addButton: UIButton!
     @IBAction func unwindToBucketListController(segue: UIStoryboardSegue){
         loadDashboardIcons()
         tableView.reloadData()
@@ -76,6 +77,8 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
     
     var namesDidLoad = false
     override func viewDidLoad() {
+        addButton.isEnabled = false
+        addButton.isHidden = true
         super.viewDidLoad()
         tableView.separatorStyle = UITableViewCell.SeparatorStyle.none
         //refresh specific properties
@@ -88,10 +91,7 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
         refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
         tableView.addSubview(refreshControl)
         
-//        if !namesDidLoad {
-//            print("loadingnames")
-//            loadNames()
-//        }
+
         
         tableView.register(UINib(nibName:"TableViewCell", bundle:nil), forCellReuseIdentifier: "TableViewCell")
         
@@ -114,15 +114,13 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
                 
                 
             }
-            
-        
-        
-        
     }
+    
     override func viewDidAppear(_ animated: Bool) {
         responseArray = []
         loadNames()
     }
+    
     func loadNames() {
         var JSON = ""
         namesDidLoad = true
@@ -134,32 +132,27 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
         urlSession.dataTask(with: request){ (data, response, error) in
             do{
                 if let data = data, let result = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String: Any]{
-                    //
+                    
                     
                     let decodedResponse = try JSONDecoder().decode(AllMarketItemsResponse.self, from: data)
                     for elem in decodedResponse.data{
                         self.responseArray.append(elem)
                     }
-                    print("doneloadingnames")
+                    print("done loading names")
                     DispatchQueue.main.async {
-                        //                        self.tableView.reloadData()
                         self.loadDashboardIcons()
+                        self.addButton.isHidden = false
+                        self.addButton.isEnabled = true
                     }
-                    
-                    
-                    
-                    
                 }else{
                     print("error")
                 }
             }catch let error{
                 print(error)
             }
-            
         }.resume()
-        
-        
     }
+    
     func loadDashboardIcons() {
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         dashboardIcons = []

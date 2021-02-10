@@ -20,6 +20,7 @@ class AddButtonViewController: UIViewController{
     var chosenItemName: String = ""
     var responseCollection: [MarketItemsResponse] = []
     var index = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -35,6 +36,7 @@ class AddButtonViewController: UIViewController{
         suggestionTable.delegate = self
         suggestionTable.dataSource = self
     }
+    
     @objc func textFieldDidChange(_ textField: UITextField) {
         let text = textField.text
         if text!.count > 2 {
@@ -77,18 +79,15 @@ class AddButtonViewController: UIViewController{
         for elem in responseCollection {
             var subStringsContained = 0
             
-            
             for splitElem in searchString{
                 if elem.market_hash_name.uppercased().contains(splitElem){
                     subStringsContained += 1
                 }
-                
             }
             
             if subStringsContained > 0 && subStringsContained == searchString.count {
                 resultingArray.append(elem)
             }
-            
         }
         return resultingArray
     }
