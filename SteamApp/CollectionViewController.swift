@@ -23,23 +23,49 @@ struct ItemResponse : Decodable{
 struct MarketItem{
     
     
-    let elem: MarketItemsResponse
-    let purchasePrize: Double
+    var elem: MarketItemsResponse
+    var purchasePrize: Double
+    
+    mutating func configure(exchangeRate: Double){
+        elem.configure(exchangeRate: exchangeRate)
+        purchasePrize = purchasePrize * exchangeRate
+        
+    }
 }
 
 struct Price: Decodable{
-    let latest: Double
+    var latest: Double
+    
+    mutating func configure(exchangeRate: Double){
+        self.latest = self.latest * exchangeRate
+    }
 }
 struct MarketItemsResponse: Decodable{
     let image: String
     let border_color: String
     let market_hash_name: String
-    let prices: Price
+    var prices: Price
+    
+    mutating func configure(exchangeRate: Double){
+        prices.configure(exchangeRate: exchangeRate)
+    }
 }
 
 struct AllMarketItemsResponse: Decodable {
     let appID: Int
     let data: [MarketItemsResponse]
+    
+    func configure(exchangeRate: Double){
+        for var elem in data{
+            elem.configure(exchangeRate: exchangeRate)
+        }
+    }
+}
+
+
+struct CurrencyResponse: Decodable{
+    let base: String
+    let rates: [String:Double]
 }
 
 extension Array where Element == MarketItem{
@@ -73,6 +99,7 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
     var dashboardIcons: [MarketItem] = []
     var responseArray: [MarketItemsResponse] = []
     var currency: String = "€"
+    var exchangeRates: [String:Double] = [:]
     
     
     var namesDidLoad = false
@@ -91,53 +118,64 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
         refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
         tableView.addSubview(refreshControl)
         
-
+        
         
         tableView.register(UINib(nibName:"TableViewCell", bundle:nil), forCellReuseIdentifier: "TableViewCell")
         
         tableView.delegate = self
         tableView.dataSource = self
         
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
         
+        loadCurrencyFromCoreData()
+    }
+    func loadCurrencyFromCoreData(){
+        
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
         let request = NSFetchRequest<Currency>(entityName: "Currency")
         if let context = appDelegate?.persistentContainer.viewContext{
             if let readEntry = try? context.fetch(request){
                 for elem in readEntry{
                     currency = elem.currencyString!
+                    
                 }
             }else{
-                    let currency = Currency(context: context)
-                    currency.currencyString = "€"
-                    appDelegate?.saveContext()
-                }
-                
-                
+                let currency = Currency(context: context)
+                currency.currencyString = "€"
+                appDelegate?.saveContext()
             }
+            
+            
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         responseArray = []
         loadNames()
+        loadCurrencyFromCoreData()
+        
     }
     
     func loadNames() {
         var JSON = ""
         namesDidLoad = true
-        let pokeUrl = URL(string: "https://api.steamapis.com/market/items/730?api_key=L9TzxRTty4RlnexsaLfeUH5OhpM")!
-        let request = URLRequest(url: pokeUrl)
+        let steamPriceUrl = URL(string: "https://api.steamapis.com/market/items/730?api_key=L9TzxRTty4RlnexsaLfeUH5OhpM")!
+        let request = URLRequest(url: steamPriceUrl)
         let config = URLSessionConfiguration.default
         let urlSession = URLSession(configuration: config)
-        print(pokeUrl)
+        
         urlSession.dataTask(with: request){ (data, response, error) in
             do{
                 if let data = data, let result = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String: Any]{
                     
                     
                     let decodedResponse = try JSONDecoder().decode(AllMarketItemsResponse.self, from: data)
+                    self.loadCurrency()
                     for elem in decodedResponse.data{
                         self.responseArray.append(elem)
                     }
+                    
+                    //                    dashboardIcons.configure(self.exchangeRates[currentCurrencyCode])
+                    
                     print("done loading names")
                     DispatchQueue.main.async {
                         self.loadDashboardIcons()
@@ -153,6 +191,30 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
         }.resume()
     }
     
+    func loadCurrency(){
+        let currencyUrl = URL(string: "http://data.fixer.io/api/latest?access_key=2f37c36f7e12faf26cf895e8e705b56a")!
+        let currencyRequest = URLRequest(url: currencyUrl)
+        
+        
+        let config = URLSessionConfiguration.default
+        let urlSession = URLSession(configuration: config)
+        urlSession.dataTask(with: currencyRequest){ (data, response, error) in
+            do{
+                if let data = data, let result = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String: Any]{
+                    
+                    
+                    let decodedResponse = try JSONDecoder().decode(CurrencyResponse.self, from: data)
+                    
+                    self.exchangeRates = decodedResponse.rates
+                    
+                }else{
+                    print("error")
+                }
+            }catch let error{
+                print(error)
+            }
+        }.resume()
+    }
     func loadDashboardIcons() {
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         dashboardIcons = []
@@ -163,7 +225,6 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
                     progressStart.stopAnimating()
                 }
                 for elem in readEntry{
-                    print(elem.name)
                     if let marketHashName = elem.name{
                         var hashName = searchMarketName(substring: marketHashName)
                         for marketElement in hashName{
@@ -173,6 +234,23 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
                         }
                     }
                 }
+                
+                var currentCurrencyCode = ""
+                switch self.currency {
+                case "$":
+                    currentCurrencyCode = "USD"
+                case "€":
+                    currentCurrencyCode = "EUR"
+                case "£":
+                    currentCurrencyCode = "GBP"
+                default:
+                    "error"
+                }
+                
+                for i in 0..<self.dashboardIcons.count{
+                    self.dashboardIcons[i].configure(exchangeRate: self.exchangeRates[currentCurrencyCode]!)
+                }
+                
             }
         }
         tableView.reloadData()
@@ -212,7 +290,7 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
         }
         
         guard let addButtonSegue = segue.destination as? AddButtonViewController else {return}
-
+        
         addButtonSegue.responseCollection = responseArray
     }
     
@@ -250,13 +328,13 @@ extension CollectionViewController:UITableViewDataSource{
             tableView.deleteRows(at: [indexPath], with: .automatic)
             
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
-
+            
             let request = NSFetchRequest<Dashboard>(entityName: "Dashboard")
             if let context = appDelegate?.persistentContainer.viewContext{
                 let readEntry = try? context.fetch(request)
                 context.delete((readEntry?[indexPath.row])!)
                 appDelegate?.saveContext()
-
+                
             }
             
         default:

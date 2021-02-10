@@ -56,16 +56,16 @@ class TableViewCell: UITableViewCell {
                 self.progress.stopAnimating()
             }
         }
-//        imageView.image =
+
         nameLabel.text = data.elem.market_hash_name
-        valueLabel.text = String(data.purchasePrize) + currency
-//            var medianPrice = iteminfo.median_price.replacingOccurrences(of: ",", with: ".").dropLast()
+        valueLabel.text = String(data.purchasePrize.format(f: ".2")) + currency
+
         if data.purchasePrize > data.elem.prices.latest{
             increaseLabel.textColor = UIColor.red
         }else{
             increaseLabel.textColor = UIColor.green
         }
-        increaseLabel.text = String(data.elem.prices.latest) + currency
+        increaseLabel.text = String(data.elem.prices.latest.format(f: ".2")) + currency
     }
 
     override func layoutSubviews() {
@@ -101,5 +101,12 @@ extension UIColor{
             }
         }
         return nil
+    }
+}
+
+
+extension Double {
+    func format(f: String) -> String {
+        return String(format: "%\(f)f", self)
     }
 }

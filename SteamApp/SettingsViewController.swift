@@ -15,7 +15,7 @@ class SettingsViewController: UIViewController{
     @IBOutlet weak var segment: UISegmentedControl!
     override func viewDidLoad() {
         super.viewDidLoad() //hallo Welt
- 
+        
         var currentStoredIndex = 0
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         
@@ -58,11 +58,11 @@ class SettingsViewController: UIViewController{
                 let currency = Currency(context: context)
                 switch segment.selectedSegmentIndex{
                 case 0:
-                    print("Currency is $")
+                    print("Currency is €")
                     currency.currencyString = "€"
                     
                 case 1:
-                    print("Currency is €")
+                    print("Currency is $")
                     currency.currencyString = "$"
                     
                 case 2:

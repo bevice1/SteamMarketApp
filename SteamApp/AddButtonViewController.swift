@@ -28,7 +28,7 @@ class AddButtonViewController: UIViewController{
         itemField.attributedPlaceholder = NSAttributedString(string: "enter an item name",
                                                              attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         
-//        prizeField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
+        //        prizeField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
         prizeField.attributedPlaceholder = NSAttributedString(string: "purchase price",
                                                               attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         
@@ -43,7 +43,7 @@ class AddButtonViewController: UIViewController{
             suggestions = searchMarketName(substring: text!)
             suggestionTable.reloadData()
         }else{
-//            man mag meinen dass da a suggestions = [] reinghört aber dann kanns es aus irgend am grund nimmer adden. So steht jz immer da alte vorschlag da a wenn ma es löscht
+            //            man mag meinen dass da a suggestions = [] reinghört aber dann kanns es aus irgend am grund nimmer adden. So steht jz immer da alte vorschlag da a wenn ma es löscht
             suggestionTable.reloadData()
         }
     }
