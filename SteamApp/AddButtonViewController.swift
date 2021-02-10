@@ -43,7 +43,6 @@ class AddButtonViewController: UIViewController{
             suggestions = searchMarketName(substring: text!)
             suggestionTable.reloadData()
         }else{
-            suggestions = []
             suggestionTable.reloadData()
         }
     }
