@@ -12,6 +12,7 @@ class AddButtonViewController: UIViewController{
     
     var suggestions:[MarketItemsResponse] = []
     var selected = false
+    var currency:String = ""
     
     @IBOutlet weak var suggestionTable: UITableView!
     @IBOutlet weak var prizeField: UITextField!
@@ -24,12 +25,16 @@ class AddButtonViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        prizeField.addTarget(self, action: #selector(self.priceTextFieldDidChange(_:)), for: .editingChanged)
+        
+        
         itemField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
         itemField.attributedPlaceholder = NSAttributedString(string: "enter an item name",
                                                              attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         
         //        prizeField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
-        prizeField.attributedPlaceholder = NSAttributedString(string: "purchase price",
+        prizeField.attributedPlaceholder = NSAttributedString(string: currency,
                                                               attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         
         suggestionTable.register(UINib(nibName:"SuggestionCell", bundle:nil), forCellReuseIdentifier: "SuggestionCell")
@@ -48,20 +53,61 @@ class AddButtonViewController: UIViewController{
         }
     }
     
+    
+    @objc func priceTextFieldDidChange(_ textField: UITextField) {
+        
+        if let selectedRange = textField.selectedTextRange {
+            let cursorPosition = textField.offset(from: textField.beginningOfDocument, to: selectedRange.start)
+            
+            if let input = textField.text{
+                if input.count > 0{
+                    if input.last != Array(currency).first {
+                        textField.text = input + currency
+                    }else if input.count == 1{
+                        textField.text = ""
+                    }
+                }
+            }
+            
+            textField.selectedTextRange = textField.textRange(from: selectedRange.start, to: selectedRange.start)
+        }
+
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let unwindToCollectionView = segue.destination as? CollectionViewController else {return}
+    
+        var currentCurrencyCode = ""
+        switch unwindToCollectionView.currency{
+        case "$":
+            currentCurrencyCode = "USD"
+        case "€":
+            currentCurrencyCode = "EUR"
+        case "£":
+            currentCurrencyCode = "GBP"
+        default:
+            "error"
+        }
+        
+        var rate = unwindToCollectionView.exchangeRates[currentCurrencyCode]!
         
         let  possibilities = searchMarketName(substring: itemField.text!)
         for elem in responseCollection{
             if elem.market_hash_name == itemField.text{
                 
-                unwindToCollectionView.dashboardIcons.append(MarketItem(elem: suggestions[index], purchasePrize: Double(prizeField.text!) ?? 0.0))
+                var purchasePrize:Double = 0
+                if prizeField.text!.last == Array(currency).first{
+                    var prizeTxt = prizeField.text!
+                    prizeTxt = String(prizeTxt.dropLast())
+                    purchasePrize = Double(prizeTxt)! / rate
+                }
+                unwindToCollectionView.dashboardIcons.append(MarketItem(elem: suggestions[index], purchasePrize: purchasePrize))
                 
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
                 if let context = appDelegate?.persistentContainer.viewContext{
                     var dashboard = Dashboard(context: context)
                     dashboard.name = elem.market_hash_name
-                    dashboard.purchasePrize = Double(prizeField.text!) ?? 0.0
+                    dashboard.purchasePrize = purchasePrize 
                     appDelegate?.saveContext()
                 }
             }

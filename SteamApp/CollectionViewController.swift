@@ -98,7 +98,7 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
     var refreshControl = UIRefreshControl()
     var dashboardIcons: [MarketItem] = []
     var responseArray: [MarketItemsResponse] = []
-    var currency: String = "€"
+    var currency: String = "$"
     var exchangeRates: [String:Double] = [:]
     
     
@@ -127,6 +127,7 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
         
         
         loadCurrencyFromCoreData()
+        loadCurrency()
     }
     func loadCurrencyFromCoreData(){
         
@@ -140,7 +141,7 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
                 }
             }else{
                 let currency = Currency(context: context)
-                currency.currencyString = "€"
+                currency.currencyString = "$"
                 appDelegate?.saveContext()
             }
             
@@ -292,6 +293,7 @@ class CollectionViewController: UIViewController, UIPopoverPresentationControlle
         guard let addButtonSegue = segue.destination as? AddButtonViewController else {return}
         
         addButtonSegue.responseCollection = responseArray
+        addButtonSegue.currency = currency
     }
     
     @objc func refresh(_ sender: AnyObject) {
