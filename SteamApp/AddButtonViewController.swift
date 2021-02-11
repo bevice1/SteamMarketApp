@@ -17,6 +17,7 @@ class AddButtonViewController: UIViewController{
     @IBOutlet weak var suggestionTable: UITableView!
     @IBOutlet weak var prizeField: UITextField!
     @IBOutlet weak var itemField: UITextField!
+    @IBOutlet weak var searchImage: UIImageView!
     var nameCollection: [String] = []
     var chosenItemName: String = ""
     var responseCollection: [MarketItemsResponse] = []
@@ -24,7 +25,9 @@ class AddButtonViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+       // itemField.leftViewMode = UITextField.ViewMode.always
+        //searchImage.image = UIImage(systemName: "search")
+        // itemField.leftView = searchImage
         
         prizeField.addTarget(self, action: #selector(self.priceTextFieldDidChange(_:)), for: .editingChanged)
         
@@ -120,7 +123,6 @@ class AddButtonViewController: UIViewController{
     func searchMarketName(substring: String) -> [MarketItemsResponse] {
         var resultingArray: [MarketItemsResponse] = []
         let searchString = substring.uppercased().split(separator: " ")
-        
         
         for elem in responseCollection {
             var subStringsContained = 0
