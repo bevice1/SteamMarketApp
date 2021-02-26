@@ -26,11 +26,11 @@
                 </subviews>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
-            <color key="backgroundColor" red="0.33145645772432308" green="0.42081514916395185" blue="0.67111949619492384" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" red="0.19235527520000001" green="0.2469049096" blue="0.37452554700000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <connections>
                 <outlet property="suggestionLabel" destination="wpS-DP-tkX" id="VIO-Xu-Dnq"/>
             </connections>
-            <point key="canvasLocation" x="140.57971014492756" y="65.625"/>
+            <point key="canvasLocation" x="142" y="66"/>
         </tableViewCell>
     </objects>
 </document>
