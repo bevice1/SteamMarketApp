@@ -33,8 +33,8 @@ class AddButtonViewController: UIViewController{
         
         
         itemField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
-        itemField.attributedPlaceholder = NSAttributedString(string: "enter an item name",
-                                                             attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
+        itemField.attributedPlaceholder = NSAttributedString(string: "e.g. AK-47 | Redline",
+                                                             attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
         
         //        prizeField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
         prizeField.attributedPlaceholder = NSAttributedString(string: currency,
@@ -50,15 +50,15 @@ class AddButtonViewController: UIViewController{
         if text!.count > 2 {
             suggestions = searchMarketName(substring: text!)
             suggestionTable.reloadData()
-        }else{
-            //            man mag meinen dass da a suggestions = [] reinghört aber dann kanns es aus irgend am grund nimmer adden. So steht jz immer da alte vorschlag da a wenn ma es löscht
-            suggestionTable.reloadData()
+        }else if text!.count == 0{
+                    suggestions = []
+                    suggestionTable.reloadData()
         }
+   
     }
     
     
     @objc func priceTextFieldDidChange(_ textField: UITextField) {
-        
         if let selectedRange = textField.selectedTextRange {
             let cursorPosition = textField.offset(from: textField.beginningOfDocument, to: selectedRange.start)
             
@@ -71,11 +71,11 @@ class AddButtonViewController: UIViewController{
                     }
                 }
             }
-            
             textField.selectedTextRange = textField.textRange(from: selectedRange.start, to: selectedRange.start)
         }
-
+        
     }
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let unwindToCollectionView = segue.destination as? CollectionViewController else {return}
@@ -102,6 +102,9 @@ class AddButtonViewController: UIViewController{
                 if prizeField.text!.last == Array(currency).first{
                     var prizeTxt = prizeField.text!
                     prizeTxt = String(prizeTxt.dropLast())
+                    if prizeTxt.contains(","){
+                        prizeTxt = prizeTxt.replacingOccurrences(of: ",", with: ".")
+                    }
                     purchasePrize = Double(prizeTxt)! / rate
                 }
                 unwindToCollectionView.dashboardIcons.append(MarketItem(elem: suggestions[index], purchasePrize: purchasePrize))
@@ -156,6 +159,7 @@ extension AddButtonViewController:UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SuggestionCell", for: indexPath) as! SuggestionCell
+        
         cell.suggestionLabel.text = suggestions[indexPath.row].market_hash_name
         return cell
     }
